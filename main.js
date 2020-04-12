@@ -7,15 +7,20 @@ const data = raw_data.map(d => ({
   rotten_rating: parseFloat(d.rotten_rating)
 }))
 
-const svg = d3.select('svg')
-const [width, height] = [500, 500]
+const [svgWidth, svgHeight] = [550, 550]
+const margin = {top: 20, right: 10, bottom: 30, left: 40}
+const width = svgWidth - margin.left - margin.right
+const height = svgHeight - margin.top - margin.bottom
+
+const svg = d3.select('svg').attr('width', svgWidth).attr('height', svgHeight)
+const container = svg.append('g').attr('transform', translate(margin.left, margin.top))
 
 let x = d3.scaleLinear()
           .domain([
             d3.min(data, d => d.rotten_rating),
             d3.max(data, d => d.rotten_rating),
           ])
-          .range([50, width + 50])
+          .range([0, width])
 
 let y = d3.scaleLinear()
           .domain([
@@ -24,7 +29,7 @@ let y = d3.scaleLinear()
           ])
           .range([0, height])
 
-svg
+container
   .selectAll('circle').data(data).enter()
   .append('circle')
     .attr('r', 3.5).attr('cx', d => x(d.rotten_rating)).attr('cy', d => y(d.us_gross))
@@ -32,7 +37,6 @@ svg
 let xAxis = d3.axisBottom(x)
 let yAxis = d3.axisLeft(y)
 
-svg.append('g').call(xAxis)
+container.append('g').call(xAxis)
   .attr('transform', translate(0, height))
-svg.append('g').call(yAxis)
-  .attr('transform', translate(50, 0))
+container.append('g').call(yAxis)
