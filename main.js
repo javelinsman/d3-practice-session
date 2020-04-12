@@ -1,2 +1,1 @@
-console.log('hello d3')
-console.log(d3)
+d3.select('rect').attr('width', 450).style('fill', 'pink')
