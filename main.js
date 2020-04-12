@@ -4,7 +4,8 @@ function translate(x, y) {
 
 const data = raw_data.map(d => ({
   us_gross: parseFloat(d.us_gross),
-  rotten_rating: parseFloat(d.rotten_rating)
+  rotten_rating: parseFloat(d.rotten_rating),
+  rating: d.rating
 }))
 
 const [svgWidth, svgHeight] = [550, 550]
@@ -27,12 +28,17 @@ let y = d3.scaleLinear()
             d3.min(data, d => d.us_gross),
             d3.max(data, d => d.us_gross),
           ])
-          .range([0, height])
+          .range([height, 0])
+
+let color = d3.scaleOrdinal()
+              .domain(['전체관람가', '7세이상', '15세이상', '19세이상'])
+              .range(['#3366cc', '#109618', 'ff9900', 'dc3912'])
 
 container
   .selectAll('circle').data(data).enter()
   .append('circle')
     .attr('r', 3.5).attr('cx', d => x(d.rotten_rating)).attr('cy', d => y(d.us_gross))
+    .style('fill', d => color(d.rating))
 
 let xAxis = d3.axisBottom(x)
 let yAxis = d3.axisLeft(y)
